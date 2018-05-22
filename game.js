@@ -38,13 +38,6 @@ class Actor {
     } catch(e) {
     	throw new Error("Операция доступна только для объекта типа Vector");
     }
-    try {
-        if(!(this.pos instanceof Vector) || !(this.size instanceof Vector) || !(this.speed instanceof Vector)) {
-          throw new Error("ошбика");
-        }
-    } catch(e) {
-      console.log(e);
-    }
   }
   act() {   
   }
