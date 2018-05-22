@@ -74,3 +74,52 @@ class Actor {
 	    }
   }
 }
+
+class Level {
+  constructor(...args) {
+    this.grid = args[0] || [];
+    this.actors = args[1] || [];
+    this.height = this.grid.length;
+    this.width = Math.max(0,...this.grid.map(el => el.length));
+    this.player = this.actors.find(el => el.type === "player");
+    this.status = null;
+    this.finishDelay = 1;
+  }
+  actorAt(actor){
+    return this.actors.find(el => {
+      if (el instanceof Actor) {
+        if (actor.isIntersect(el)){
+          return el;
+        }
+      }
+    });
+  }
+  obstacleAt(pos, size) {
+    let right = pos.x + size.x;
+    let left = pos.x;
+    let top = pos.y;
+    let bottom = pos.y + size.y;
+    if (this.height - 1 < bottom) {
+      return this.grid[top] ? this.grid[top][0] : undefined;
+    } else {
+      return this.grid[bottom] ? this.grid[bottom][0] : undefined;
+    }
+  }
+  removeActors(actor) {
+    let index = this.actors.indexOf(this.actors.find(el => el === actor));
+    this.actors.splice(index, 1);
+  }
+  noMoreActors(type) {
+    return this.actors.every(el => el.type !== type);
+  }
+  playerTouched(type, ...args) {
+    let obj = args[0];
+    if (type === "lava" || type === "fireball") {
+      this.status = "lost";
+    }
+    if (type === "coin" && obj) {
+      this.removeActors(obj);
+      this.noMoreActors(type) ? this.status = "won" : this.status = null;
+    }
+  }
+}
