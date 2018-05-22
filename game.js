@@ -28,20 +28,15 @@ class Vector {
 
 class Actor {
   constructor(...args) {
-    if (typeof arguments[0] === "undefined") { 
-      this.pos = new Vector(0, 0);
-    } else {
-      this.pos = arguments[0];
-    }
-    if (typeof arguments[1] === "undefined") {
-      this.size = new Vector(1, 1);
-    } else {
-      this.size = arguments[1];
-    }
-    if (typeof arguments[2] === "undefined") {
-      this.speed = new Vector(0, 0);
-    } else {
-      this.speed = arguments[2];
+    this.pos = args[0] || new Vector(0, 0);
+    this.size = args[1] || new Vector(1, 1);
+    this.speed = args[2] || new Vector(0, 0);
+    try {
+    	if (!(this.pos instanceof Vector) || !(this.size instanceof Vector) || !(this.speed instanceof Vector) ) {
+      	console.log(e)
+    	}
+    } catch(e) {
+    	throw new Error("Операция доступна только для объекта типа Vector");
     }
   }
   act() {   
@@ -62,12 +57,20 @@ class Actor {
     return "actor";
   }
   isIntersect(obj) {
-    if (this === obj) {
-      return false;
-    }
-     if (this.right > obj.left && this.left < obj.right && this.top < obj.bottom && this.bottom > obj.top) {
-        return true;
-      }
-      return false;
+	   try {
+	   	if (obj instanceof Actor && typeof obj !== "undefined") {
+		    if (this === obj) {
+		      return false;
+		    }
+		     if (this.right > obj.left && this.left < obj.right && this.top < obj.bottom && this.bottom > obj.top) {
+		        return true;
+		      }
+		      return false;
+		    } else {
+		    	console.log(e);
+		    }
+	    } catch (e) {
+	    	throw new Error("Операция доступна только для объектов типа Actor");
+	    }
   }
 }
