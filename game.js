@@ -85,6 +85,9 @@ class Level {
     this.status = null;
     this.finishDelay = 1;
   }
+  isFinished() {
+    return this.status !== null && this.finishDelay < 1 ? true : false;
+  }
   actorAt(actor){
     return this.actors.find(el => {
       if (el instanceof Actor) {
@@ -99,13 +102,21 @@ class Level {
     let left = pos.x;
     let top = pos.y;
     let bottom = pos.y + size.y;
-    if (this.height - 1 < bottom) {
-      return this.grid[top] ? this.grid[top][0] : undefined;
+    if (left < 0 || right > this.grid.length || top < 0 ) {
+      return "wall";
+    } else if (bottom > this.height) {
+      return "lava";
     } else {
-      return this.grid[bottom] ? this.grid[bottom][0] : undefined;
+    	let result;
+    	this.grid.forEach(str => {
+    		result = str.find(ceil => {
+    			return typeof ceil !== undefined && bottom !== this.grid.indexOf(str);
+    		})
+    	})
+    	return result;
     }
   }
-  removeActors(actor) {
+  removeActor(actor) {
     let index = this.actors.indexOf(this.actors.find(el => el === actor));
     this.actors.splice(index, 1);
   }
@@ -118,7 +129,7 @@ class Level {
       this.status = "lost";
     }
     if (type === "coin" && obj) {
-      this.removeActors(obj);
+      this.removeActor(obj);
       this.noMoreActors(type) ? this.status = "won" : this.status = null;
     }
   }
