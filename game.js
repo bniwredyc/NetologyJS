@@ -182,6 +182,29 @@ class LevelParser {
   }
 }
 
+class Fireball extends Actor {
+	constructor(...args) {
+		super(...args);
+		this.pos = args[0] || new Vector(0, 0);
+		this.size = new Vector(1, 1);
+		this.speed = args[1] || new Vector(0, 0);
+	}
+
+	get type() {
+		return "fireball";
+	}
+	getNextPosition(time = 1) {
+		return new Vector(this.pos.x + this.speed.x * time, this.pos.y + this.speed.y * time);
+	}
+	handleObstacle() {
+		this.speed.x = -this.speed.x;
+		this.speed.y = -this.speed.y;
+	}
+	act(time, level) {
+		level.obstacleAt(this.getNextPosition(time), this.size) ? this.handleObstacle() : this.pos = this.getNextPosition(time);
+	}
+}
+
 class Player extends Actor {
   constructor(pos) {
     super(pos);
