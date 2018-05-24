@@ -39,6 +39,7 @@ class Actor {
     	throw new Error("Операция доступна только для объекта типа Vector");
     }
   }
+
   act() {   
   }
   get left() {
@@ -85,6 +86,7 @@ class Level {
     this.status = null;
     this.finishDelay = 1;
   }
+
   isFinished() {
     return this.status !== null && this.finishDelay < 1 ? true : false;
   }
@@ -135,6 +137,51 @@ class Level {
   }
 }
 
+class LevelParser {
+  constructor(dict) {
+    this.dict = dict || {};
+  }
+
+  actorFromSymbol(symbol) {
+    return symbol ? this.dict[symbol] : undefined;
+  }
+  obstacleFromSymbol(symbol) {
+    switch(symbol) {
+      case undefined:
+      return undefined;
+      break;
+      case "x": 
+      return "wall";
+      break;
+      case "!": 
+      return "lava";
+      break;
+    }
+  }
+  createGrid(strArray) {
+    return strArray.map(str => {
+      let arrArray = [];
+      [...str].forEach(ceil => {
+        arrArray.push(this.obstacleFromSymbol(ceil))
+      })
+      return strArray ? arrArray : [];
+    });
+  }
+  createActors(strArray) {
+    let actorsArray = [];
+    strArray.map((str, y) => {
+      [...str].forEach((ceil, x) => {
+        if (typeof this.actorFromSymbol(ceil) === "function" && new (this.actorFromSymbol(ceil))() instanceof Actor)
+          actorsArray.push(new (this.actorFromSymbol(ceil))(new Vector(x, y)));
+      })
+    })
+    return actorsArray;
+  }
+  parse(strArray) {
+    return new Level(this.createGrid(strArray), this.createActors(strArray));
+  }
+}
+
 class Player extends Actor {
   constructor(pos) {
     super(pos);
@@ -142,6 +189,7 @@ class Player extends Actor {
     this.size = new Vector(0.8, 1.5);
     this.speed = new Vector(0, 0);
   }
+
   get type() {
     return "player";
   }
