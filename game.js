@@ -5,7 +5,7 @@ class Vector {
     this.x = x;
     this.y = y;
   }
-  
+  /* Branch searchingBugs */
   plus(obj) {
     try {
       if (obj instanceof Vector) {
