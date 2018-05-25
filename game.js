@@ -102,10 +102,10 @@ class Level {
     });
   }
   obstacleAt(pos, size) {
-    let left = Math.floor(pos.x);
-    let right = Math.ceil(pos.x + size.x);
-    let top = Math.floor(pos.y);
-    let bottom = Math.ceil(pos.y + size.y);
+    let left = pos.x;
+    let right = pos.x + size.x;
+    let top = pos.y;
+    let bottom = pos.y + size.y;
 
     if (left < 0 || right > this.width || top < 0 ) {
       return "wall";
@@ -115,7 +115,7 @@ class Level {
     	let result;
     	this.grid.forEach((str, y) => {
     		[...str].forEach((el, x) => {
-    			if((y >= top && y < bottom) && (x <= left && x < right)) {
+    			if((y <= top && y < bottom) && (x <= left && x < right)) {
     				result = el;
     			}
     		})
@@ -286,10 +286,3 @@ const actorDict = {
   '|': VerticalFireball
 
 };
-const parser = new LevelParser(actorDict);
-
-loadLevels()
-  .then((res) => {
-    runGame(JSON.parse(res), parser, DOMDisplay)
-      .then(() => alert('Вы выиграли!'))
-  });
