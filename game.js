@@ -1,11 +1,12 @@
 'use strict';
+/* Branch searchingBugs */
 
 class Vector {
   constructor(x = 0, y = 0) {
     this.x = x;
     this.y = y;
   }
-  /* Branch searchingBugs */
+  
   plus(obj) {
     try {
       if (obj instanceof Vector) {
@@ -20,11 +21,12 @@ class Vector {
     }
   }
   times(number) {
-    this.x *= number;
-    this.y *= number;
-    return new Vector(this.x, this.y);
+  	let newX = this.x * number;
+  	let newY = this.y * number;
+    return new Vector(newX, newY);
   }
 }
+
 
 class Actor {
   constructor(...args) {
@@ -88,7 +90,7 @@ class Level {
   }
 
   isFinished() {
-    return this.status !== null && this.finishDelay < 1 ? true : false;
+    return this.status !== null && this.finishDelay < 0 ? true : false;
   }
   actorAt(actor){
     return this.actors.find(el => {
@@ -100,22 +102,23 @@ class Level {
     });
   }
   obstacleAt(pos, size) {
-    let right = pos.x + size.x;
-    let left = pos.x;
-    let top = pos.y;
-    let bottom = pos.y + size.y;
-    if (left < 0 || right > this.grid.length || top < 0 ) {
+    let left = Math.floor(pos.x);
+    let right = Math.ceil(pos.x + size.x);
+    let top = Math.floor(pos.y);
+    let bottom = Math.ceil(pos.y + size.y);
+
+    if (left < 0 || right > this.width || top < 0 ) {
       return "wall";
     } else if (bottom > this.height) {
       return "lava";
     } else {
-    	let result;
-    	this.grid.forEach(str => {
-    		result = str.find(ceil => {
-    			return typeof ceil !== undefined && bottom !== this.grid.indexOf(str);
+    	this.grid.forEach((str, y) => {
+    		[...str].forEach((el, x) => {
+    			if(el !== undefined && !(el instanceof Actor)) {
+    				console.log(x, y, el);
+    			}
     		})
     	})
-    	return result;
     }
   }
   removeActor(actor) {
@@ -262,6 +265,7 @@ class Coin extends Actor {
 class Player extends Actor {
   constructor(pos) {
     super(pos);
+    console.log(this.pos)
     this.pos = new Vector(this.pos.x, this.pos.y - 0.5) ;
     this.size = new Vector(0.8, 1.5);
     this.speed = new Vector(0, 0);
@@ -271,3 +275,19 @@ class Player extends Actor {
     return "player";
   }
 }
+
+const actorDict = {
+  '@': Player,
+  'v': FireRain,
+  'o': Coin,
+  '=': HorizontalFireball,
+  '|': VerticalFireball
+
+};
+const parser = new LevelParser(actorDict);
+
+loadLevels()
+  .then((res) => {
+    runGame(JSON.parse(res), parser, DOMDisplay)
+      .then(() => alert('Вы выиграли!'))
+  });
