@@ -112,13 +112,15 @@ class Level {
     } else if (bottom > this.height) {
       return "lava";
     } else {
+    	let result;
     	this.grid.forEach((str, y) => {
     		[...str].forEach((el, x) => {
-    			if(el !== undefined && !(el instanceof Actor)) {
-    				console.log(x, y, el);
+    			if((y >= top && y < bottom) && (x <= left && x < right)) {
+    				result = el;
     			}
     		})
     	})
+    	return result;
     }
   }
   removeActor(actor) {
