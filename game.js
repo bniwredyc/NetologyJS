@@ -102,10 +102,10 @@ class Level {
     });
   }
   obstacleAt(pos, size) {
-    let left = pos.x;
-    let right = pos.x + size.x;
-    let top = pos.y;
-    let bottom = pos.y + size.y;
+    let left = Math.floor(pos.x);
+    let right = Math.ceil(pos.x + size.x);
+    let top = Math.floor(pos.y);
+    let bottom = Math.ceil(pos.y + size.y);
 
     if (left < 0 || right > this.width || top < 0 ) {
       return "wall";
@@ -115,7 +115,7 @@ class Level {
     	let result;
     	this.grid.forEach((str, y) => {
     		[...str].forEach((el, x) => {
-    			if((y <= top && y < bottom) && (x <= left && x < right)) {
+    			if(y >= top && y < bottom && x >= left && x < right) {
     				result = el;
     			}
     		})
@@ -211,15 +211,15 @@ class Fireball extends Actor {
 }
 
 class HorizontalFireball extends Fireball {
-	constructor() {
-		super();
+	constructor(pos) {
+		super(pos);
 		this.speed = new Vector(2, 0);
 	}
 }
 
 class VerticalFireball extends Fireball {
-	constructor() {
-		super();
+	constructor(pos) {
+		super(pos);
 		this.speed = new Vector(0, 2);
 	}
 }
@@ -267,7 +267,6 @@ class Coin extends Actor {
 class Player extends Actor {
   constructor(pos) {
     super(pos);
-    console.log(this.pos)
     this.pos = new Vector(this.pos.x, this.pos.y - 0.5) ;
     this.size = new Vector(0.8, 1.5);
     this.speed = new Vector(0, 0);
@@ -284,5 +283,12 @@ const actorDict = {
   'o': Coin,
   '=': HorizontalFireball,
   '|': VerticalFireball
-
 };
+
+const parser = new LevelParser(actorDict);
+
+loadLevels()
+  .then((res) => {
+    runGame(JSON.parse(res), parser, DOMDisplay)
+      .then(() => alert('Вы выиграли!'))
+  });
