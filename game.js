@@ -1,5 +1,4 @@
 'use strict';
-/* Branch searchingBugs */
 
 class Vector {
   constructor(x = 0, y = 0) {
