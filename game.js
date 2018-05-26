@@ -101,10 +101,10 @@ class Level {
     });
   }
   obstacleAt(pos, size) {
-    let left = Math.floor(pos.x);
-    let right = Math.ceil(pos.x + size.x);
-    let top = Math.floor(pos.y);
-    let bottom = Math.ceil(pos.y + size.y);
+    let left = Math.round(pos.x);
+    let right = (pos.x + size.x);
+    let top = Math.round(pos.y);
+    let bottom = (pos.y + size.y);
 
     if (left < 0 || right > this.width || top < 0 ) {
       return "wall";
