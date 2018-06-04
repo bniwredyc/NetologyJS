@@ -98,7 +98,7 @@ class Level {
       return "lava";
     }
 
-  	for (let y = top; y < bottom; y++) {
+    for (let y = top; y < bottom; y++) {
       for (let x = left; x < right; x++) {
         if (this.grid[y][x]) {
           return this.grid[y][x];
