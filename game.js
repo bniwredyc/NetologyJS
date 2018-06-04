@@ -149,20 +149,24 @@ class LevelParser {
   createGrid(strArray) {
     return strArray.map(str => {
       let arrArray = [];
-      str.split("").map(ceil => {
-        arrArray.push(this.obstacleFromSymbol(ceil));
+      str.split("").map(cell => {
+        arrArray.push(this.obstacleFromSymbol(cell));
       });
       return strArray ? arrArray : [];
-    })
+    });
   }
   createActors(strArray) {
     let actorsArray = [];
      strArray.map((str, y) => {
        str.split("").forEach((ceil, x) => {
-         if (typeof this.actorFromSymbol(ceil) === "function" && new (this.actorFromSymbol(ceil))() instanceof Actor)
-           actorsArray.push(new (this.actorFromSymbol(ceil))(new Vector(x, y)));
-       })
-     })
+         if (typeof this.actorFromSymbol(ceil) === "function") {
+          let obj = new (this.actorFromSymbol(ceil))(new Vector(x,y));
+          if (obj instanceof Actor) {
+           actorsArray.push(obj);
+          }
+        }
+       });
+     });
      return actorsArray;
   }
   parse(strArray) {
